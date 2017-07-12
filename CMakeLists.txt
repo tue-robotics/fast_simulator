@@ -8,6 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   image_geometry
   image_transport
+  interactive_markers
   kdl_parser
   message_generation
   nav_msgs
@@ -22,6 +23,7 @@ find_package(catkin REQUIRED COMPONENTS
   tue_manipulation
   tue_msgs
   virtual_cam
+  visualization_msgs
 )
 
 catkin_python_setup()
