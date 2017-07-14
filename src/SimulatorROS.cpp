@@ -317,7 +317,7 @@ Object* SimulatorROS::getObjectFromModel(const std::string& model_name, const st
         obj->addChild(body, geo::Transform(geo::Matrix3::identity(), geo::Vector3(0, 0, 0)));
 
         Object* face = new Object(model_name + "-face", id + "-face");
-        obj->addChild(face, geo::Transform(geo::Matrix3::identity(), geo::Vector3(0, 0, 1.7)));
+        obj->addChild(face, geo::Transform(geo::Matrix3::identity(), geo::Vector3(0, 0, 1.6)));
 
         return obj;
     }
