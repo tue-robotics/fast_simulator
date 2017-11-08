@@ -345,8 +345,7 @@ void Amigo::publishControlRefs()
     }
 
     pub_body_.publish(body_meas_msg);
-    pub_left_arm_.publish(body_meas_msg);
-    pub_right_arm_.publish(body_meas_msg);
+    pub_arms_.publish(body_meas_msg);
     pub_torso_.publish(body_meas_msg);
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
