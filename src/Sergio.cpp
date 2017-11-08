@@ -71,8 +71,7 @@ Sergio::Sergio(ros::NodeHandle& nh) : Robot(nh, "sergio")
     pub_body_ = nh.advertise<sensor_msgs::JointState>("/sergio/body/measurements", 10);
     pub_head_ = nh.advertise<sensor_msgs::JointState>("/sergio/neck/measurements", 10);
     pub_dynamixel_ = nh.advertise<sensor_msgs::JointState>("/sergio/neck/measurements", 10);
-    pub_left_arm_ = nh.advertise<sensor_msgs::JointState>("/sergio/left_arm/measurements", 10);
-    pub_right_arm_ = nh.advertise<sensor_msgs::JointState>("/sergio/right_arm/measurements", 10);
+    pub_arms_ = nh.advertise<sensor_msgs::JointState>("/sergio/joint_states", 10);
     pub_torso_ = nh.advertise<sensor_msgs::JointState>("/sergio/torso/measurements", 10);
     pub_left_gripper_ = nh.advertise<tue_msgs::GripperMeasurement>("/sergio/left_arm/gripper/measurements", 10);
     pub_right_gripper_ = nh.advertise<tue_msgs::GripperMeasurement>("/sergio/right_arm/gripper/measurements", 10);
@@ -299,7 +298,45 @@ void Sergio::publishControlRefs()
     std_msgs::Header header;
     header.stamp = ros::Time::now();
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    sensor_msgs::JointState head_meas_msg;
+    head_meas_msg.header = header;
+    head_meas_msg.name.push_back("neck_pan_joint");
+    head_meas_msg.name.push_back("neck_tilt_joint");
+    head_meas_msg.position.push_back(getJointPosition("neck_pan_joint"));
+    head_meas_msg.position.push_back(getJointPosition("neck_tilt_joint"));
+    pub_head_.publish(head_meas_msg);
+
+    sensor_msgs::JointState dynamixel_msg;
+    dynamixel_msg.header = header;
+    dynamixel_msg.name.push_back("laser_tilt_joint");
+    dynamixel_msg.position.push_back(getJointPosition("laser_tilt_joint"));
+    pub_dynamixel_.publish(dynamixel_msg);
+
+    sensor_msgs::JointState torso_meas_msg;
+    torso_meas_msg.header = header;
+    for (unsigned int j = 0; j < torso_joint_names.size(); ++j) {
+        torso_meas_msg.name.push_back(torso_joint_names[j]);
+        torso_meas_msg.position.push_back(getJointPosition(torso_joint_names[j]));
+    }
+    /// Apply constraint
+    // ToDo: don't hardcode!!!
+    ROS_WARN_ONCE("Knee/ankle constraint hardcoded!!!");
+    double q_ankle = torso_meas_msg.position[0];
+    double q_knee  = 1.3365*q_ankle*q_ankle*q_ankle -1.9862*q_ankle*q_ankle + 2.6392*q_ankle + 0.001;
+    torso_meas_msg.position[1] = q_knee;
+    pub_torso_.publish(torso_meas_msg);
+
+    sensor_msgs::JointState arm_joints;
+    arm_joints.header = header;
+    for(unsigned int j = 0; j < left_arm_joint_names.size(); ++j) {
+        arm_joints.name.push_back(left_arm_joint_names[j]);
+        arm_joints.position.push_back(getJointPosition(left_arm_joint_names[j]));
+    }
+    for(unsigned int j = 0; j < right_arm_joint_names.size(); ++j) {
+        arm_joints.name.push_back(right_arm_joint_names[j]);
+        arm_joints.position.push_back(getJointPosition(right_arm_joint_names[j]));
+    }
+    pub_arms_.publish(arm_joints);
 
     sensor_msgs::JointState body_meas_msg;
     body_meas_msg.header = header;

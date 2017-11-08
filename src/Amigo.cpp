@@ -173,8 +173,7 @@ Amigo::Amigo(ros::NodeHandle& nh) : Robot(nh, "amigo")
 
     pub_body_ = nh.advertise<sensor_msgs::JointState>("/amigo/body/measurements", 10);
     pub_head_ = nh.advertise<sensor_msgs::JointState>("/amigo/neck/measurements", 10);
-    pub_left_arm_ = nh.advertise<sensor_msgs::JointState>("/amigo/left_arm/measurements", 10);
-    pub_right_arm_ = nh.advertise<sensor_msgs::JointState>("/amigo/right_arm/measurements", 10);
+    pub_arms_ = nh.advertise<sensor_msgs::JointState>("/amigo/joint_states", 10);
     pub_torso_ = nh.advertise<sensor_msgs::JointState>("/amigo/torso/measurements", 10);
     pub_left_gripper_ = nh.advertise<tue_msgs::GripperMeasurement>("/amigo/left_arm/gripper/measurements", 10);
     pub_right_gripper_ = nh.advertise<tue_msgs::GripperMeasurement>("/amigo/right_arm/gripper/measurements", 10);
@@ -346,8 +345,7 @@ void Amigo::publishControlRefs()
     }
 
     pub_body_.publish(body_meas_msg);
-    pub_left_arm_.publish(body_meas_msg);
-    pub_right_arm_.publish(body_meas_msg);
+    pub_arms_.publish(body_meas_msg);
     pub_torso_.publish(body_meas_msg);
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -369,6 +367,17 @@ void Amigo::publishControlRefs()
     pub_torso_.publish(torso_meas_msg);
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    sensor_msgs::JointState arm_joints;
+    arm_joints.header = header;
+    for(unsigned int j = 0; j < left_arm_joint_names.size(); ++j) {
+        arm_joints.name.push_back(left_arm_joint_names[j]);
+        arm_joints.position.push_back(getJointPosition(left_arm_joint_names[j]));
+    }
+    for(unsigned int j = 0; j < right_arm_joint_names.size(); ++j) {
+        arm_joints.name.push_back(right_arm_joint_names[j]);
+        arm_joints.position.push_back(getJointPosition(right_arm_joint_names[j]));
+    }
+    pub_arms_.publish(arm_joints);
 
     tue_msgs::GripperMeasurement left_gripper;
     left_gripper.direction = left_gripper_direction_;
