@@ -3,15 +3,76 @@
 
 #include "tue_msgs/GripperCommand.h"
 #include "tue_msgs/GripperMeasurement.h"
-#include <trajectory_msgs/JointTrajectory.h>
+#include <trajectory_msgs/JointTrajectory.h> // Delete
+#include <actionlib/server/action_server.h>
+#include <control_msgs/FollowJointTrajectoryAction.h>
+#include <urdf/model.h>
 
-#include "fast_simulator/Robot.h"
+#include "../../include/fast_simulator/Robot.h"
 
-class Amigo : public Robot {
+#include <tue/manipulation/reference_generator.h>
+
+typedef actionlib::ActionServer<control_msgs::FollowJointTrajectoryAction> TrajectoryActionServer;
+
+// ----------------------------------------------------------------------------------------------------
+
+class Amigo;
+
+class BodyPart
+{
 
 public:
 
-    Amigo(ros::NodeHandle& nh, bool publish_localization = true);
+    BodyPart();
+
+    ~BodyPart();
+
+    void setRobot(Amigo* robot) { robot_ = robot; }
+
+    void addActionServer(ros::NodeHandle& nh, const std::string& name);
+
+    void initJoint(const std::string& name, double pos);
+
+    void readJointInfoFromModel(const urdf::Model& Model);
+
+    void step(double dt);
+
+    const std::vector<std::string>& joint_names() const { return reference_generator_.joint_names(); }
+
+private:
+
+    Amigo* robot_;
+
+    tue::manipulation::ReferenceGenerator reference_generator_;
+
+    void goalCallback(TrajectoryActionServer::GoalHandle gh);
+
+    void cancelCallback(TrajectoryActionServer::GoalHandle gh);
+
+    std::vector<TrajectoryActionServer*> action_servers_;
+
+    std::map<std::string, TrajectoryActionServer::GoalHandle> goal_handles_;
+
+};
+
+// ----------------------------------------------------------------------------------------------------
+
+struct TrajectoryInfo
+{
+    TrajectoryInfo() : time(0), index(-1) {}
+
+    TrajectoryActionServer::GoalHandle goal_handle;
+    double time;
+    int index;
+};
+
+// ----------------------------------------------------------------------------------------------------
+
+class Amigo : public Robot {    
+
+public:
+
+    Amigo(ros::NodeHandle& nh);
 
     virtual ~Amigo();
 
@@ -23,6 +84,7 @@ protected:
 
     ros::Time t_last_cmd_vel_;
 
+    ros::Publisher pub_body_;
     ros::Publisher pub_head_;
     ros::Publisher pub_arms_;
     ros::Publisher pub_torso_;
@@ -33,20 +95,15 @@ protected:
     ros::Subscriber sub_cmd_vel;
     ros::Subscriber sub_init_pose;
     ros::Subscriber sub_head;
-    ros::Subscriber sub_spindle, sub_spindle_traj_;
-    ros::Subscriber sub_left_arm, sub_left_arm_traj_;
-    ros::Subscriber sub_right_arm, sub_right_arm_traj_;
+    ros::Subscriber sub_spindle;
+    ros::Subscriber sub_left_arm;
+    ros::Subscriber sub_right_arm;
 
     ros::Subscriber sub_left_gripper;
     ros::Subscriber sub_right_gripper;
 
     int left_gripper_direction_;
     int right_gripper_direction_;
-
-    std::vector<std::string> left_arm_joint_names;
-    std::vector<std::string> right_arm_joint_names;
-
-    std::map<std::string, Trajectory> joint_trajectories_;
 
     void callbackCmdVel(const geometry_msgs::Twist::ConstPtr& msg);
 
@@ -56,7 +113,7 @@ protected:
 
     void callbackJointReference(const sensor_msgs::JointState::ConstPtr msg);
 
-    void callbackJointTrajectory(const trajectory_msgs::JointTrajectory::ConstPtr msg);
+    BodyPart body_;
 
     void callbackInitialPose(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& msg);
 
