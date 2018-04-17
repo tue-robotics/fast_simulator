@@ -71,7 +71,8 @@ protected:
 
     void cancelCallback(TrajectoryActionServer::GoalHandle gh);
 
-    TrajectoryActionServer* as_;
+    TrajectoryActionServer* neck_as_;
+    TrajectoryActionServer* body_as_;
 
     std::map<std::string, TrajectoryActionServer::GoalHandle> goal_handles_;
 

@@ -61,10 +61,15 @@ Sergio::Sergio(ros::NodeHandle& nh) : Robot(nh, "sergio")
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    as_ = new TrajectoryActionServer(nh, "body/joint_trajectory_action", false);
-    as_->registerGoalCallback(boost::bind(&Sergio::goalCallback, this, _1));
-    as_->registerCancelCallback(boost::bind(&Sergio::cancelCallback, this, _1));
-    as_->start();
+    neck_as_ = new TrajectoryActionServer(nh, "neck/joint_trajectory_action", false);
+    neck_as_->registerGoalCallback(boost::bind(&Sergio::goalCallback, this, _1));
+    neck_as_->registerCancelCallback(boost::bind(&Sergio::cancelCallback, this, _1));
+    neck_as_->start();
+
+    body_as_ = new TrajectoryActionServer(nh, "body/joint_trajectory_action", false);
+    body_as_->registerGoalCallback(boost::bind(&Sergio::goalCallback, this, _1));
+    body_as_->registerCancelCallback(boost::bind(&Sergio::cancelCallback, this, _1));
+    body_as_->start();
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -100,7 +105,8 @@ Sergio::Sergio(ros::NodeHandle& nh) : Robot(nh, "sergio")
 
 Sergio::~Sergio()
 {
-    delete as_;
+    delete body_as_;
+    delete neck_as_;
 }
 
 // ----------------------------------------------------------------------------------------------------

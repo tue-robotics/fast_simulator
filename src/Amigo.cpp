@@ -133,6 +133,7 @@ Amigo::Amigo(ros::NodeHandle& nh) : Robot(nh, "amigo")
 //    body_.addActionServer(nh, "right_arm/joint_trajectory");
 
     body_.addActionServer(nh, "body/joint_trajectory_action");
+    body_.addActionServer(nh, "neck/joint_trajectory_action");
 //    body_.addActionServer(nh, "torso/joint_trajectory_action");
 //    body_.addActionServer(nh, "left_arm/joint_trajectory_action");
 //    body_.addActionServer(nh, "right_arm/joint_trajectory_action");
