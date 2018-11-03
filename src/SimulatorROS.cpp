@@ -61,7 +61,7 @@ void SimulatorROS::configure(tue::Configuration& config)
             // Check for the 'enabled' field. If it exists and the value is 0, omit this object. This allows
             // the user to easily enable and disable certain objects with one single flag.
             int enabled;
-            if (config.value("enabled", enabled, tue::OPTIONAL) && !enabled)
+            if (config.value("enabled", enabled, tue::config::OPTIONAL) && !enabled)
                 continue;
 
             std::string id;
@@ -72,16 +72,16 @@ void SimulatorROS::configure(tue::Configuration& config)
             // Load pose
 
             geo::Pose3D pose = geo::Pose3D::identity();
-            if (config.readGroup("pose", tue::REQUIRED))
+            if (config.readGroup("pose", tue::config::REQUIRED))
             {
                 config.value("x", pose.t.x);
                 config.value("y", pose.t.y);
                 config.value("z", pose.t.z);
 
                 double roll = 0, pitch = 0, yaw = 0;
-                config.value("roll", roll, tue::OPTIONAL);
-                config.value("pitch", pitch, tue::OPTIONAL);
-                config.value("yaw", yaw, tue::OPTIONAL);
+                config.value("roll", roll, tue::config::OPTIONAL);
+                config.value("pitch", pitch, tue::config::OPTIONAL);
+                config.value("yaw", yaw, tue::config::OPTIONAL);
                 pose.R.setRPY(roll, pitch, yaw);
 
                 config.endGroup();
@@ -93,7 +93,7 @@ void SimulatorROS::configure(tue::Configuration& config)
             // Load type
 
             std::string type;
-            config.value("type", type, tue::OPTIONAL);
+            config.value("type", type, tue::config::OPTIONAL);
 
             Object* obj = 0;
             if (type == "kinect")
