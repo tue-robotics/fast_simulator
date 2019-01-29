@@ -1,5 +1,7 @@
 #include <urdf/model.h>
 
+#include <geolib/ros/msg_conversions.h>
+
 #include "../include/fast_simulator/Hero.h"
 
 Hero::Hero(ros::NodeHandle &nh) : Robot(nh, "hero")
@@ -51,3 +53,47 @@ void Hero::step(double dt)
 
 // ----------------------------------------------------------------------------------------------------
 
+// ----------------------------------------------------------------------------------------------------
+
+void Hero::callbackCmdVel(const geometry_msgs::Twist::ConstPtr& msg)
+{
+    this->velocity_ = *msg;
+    t_last_cmd_vel_ = ros::Time::now();
+}
+
+// ----------------------------------------------------------------------------------------------------
+
+void Hero::callbackInitialPose(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& msg)
+{
+    geo::Transform pose;
+    geo::convert(msg->pose.pose, pose);
+    setPose(pose);
+}
+
+// ----------------------------------------------------------------------------------------------------
+
+void Hero::goalCallback(TrajectoryActionServer::GoalHandle gh)
+{
+    std::string id = gh.getGoalID().id;
+
+    std::stringstream error;
+    if (!reference_generator_.setGoal(*gh.getGoal(), id, error))
+    {
+        gh.setRejected(control_msgs::FollowJointTrajectoryResult(), error.str());
+        ROS_ERROR("%s", error.str().c_str());
+        return;
+    }
+
+    // Accept the goal
+    gh.setAccepted();
+    goal_handles_[id] = gh;
+}
+
+// ----------------------------------------------------------------------------------------------------
+
+void Hero::cancelCallback(TrajectoryActionServer::GoalHandle gh)
+{
+    gh.setCanceled();
+    reference_generator_.cancelGoal(gh.getGoalID().id);
+    goal_handles_.erase(gh.getGoalID().id);
+}
