@@ -78,6 +78,7 @@ include_directories(
 add_executable(simulator
   include/fast_simulator/Amigo.h
   include/fast_simulator/Event.h
+  include/fast_simulator/Hero.h
   include/fast_simulator/Joint.h
   include/fast_simulator/Kinect.h
   include/fast_simulator/LRF.h
@@ -99,6 +100,7 @@ add_executable(simulator
 
   src/Amigo.cpp
   src/Event.cpp
+  src/Hero.cpp
   src/Joint.cpp
   src/Kinect.cpp
   src/LRF.cpp
