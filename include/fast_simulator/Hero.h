@@ -7,6 +7,7 @@
 #include <tue/manipulation/reference_generator.h>
 
 #include "fast_simulator/Robot.h"
+#include "fast_simulator/BodyPart.h"
 
 class Hero : public Robot
 {
@@ -48,18 +49,10 @@ protected:
   Event event_odom_pub_;
   Event event_refs_pub_;
 
+  // Bodyparts
+  BodyPart body_;
 
-  // New
 
-  typedef actionlib::ActionServer<control_msgs::FollowJointTrajectoryAction> TrajectoryActionServer;
-
-  void goalCallback(TrajectoryActionServer::GoalHandle gh);  // ToDo: move to Robot
-
-  void cancelCallback(TrajectoryActionServer::GoalHandle gh);  // ToDo: move to Robot
-
-  TrajectoryActionServer* as_;
-
-  std::map<std::string, TrajectoryActionServer::GoalHandle> goal_handles_;
 
 };  // End of class Hero
 

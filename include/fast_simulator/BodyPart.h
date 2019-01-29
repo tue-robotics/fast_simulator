@@ -1,3 +1,6 @@
+#ifndef _FAST_SIMULATOR_BODYPART_H_
+#define _FAST_SIMULATOR_BODYPART_H_
+
 #include <actionlib/server/action_server.h>
 #include <control_msgs/FollowJointTrajectoryAction.h>
 #include <ros/ros.h>
@@ -45,3 +48,5 @@ private:
     std::map<std::string, TrajectoryActionServer::GoalHandle> goal_handles_;
 
 };
+
+#endif
