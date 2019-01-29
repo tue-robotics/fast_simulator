@@ -51,9 +51,3 @@ void Hero::step(double dt)
 
 // ----------------------------------------------------------------------------------------------------
 
-void Hero::initJoint(const std::string& name, double pos)
-{
-    reference_generator_.initJoint(name, 0, 0, 0, 0);
-    reference_generator_.setJointState(name, pos, 0);
-    setJointPosition(name, pos);
-}

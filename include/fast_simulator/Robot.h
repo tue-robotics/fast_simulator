@@ -14,6 +14,8 @@
 #include <kdl/tree.hpp>
 #include <kdl_parser/kdl_parser.hpp>
 
+#include <tue/manipulation/reference_generator.h> // ToDo: forward declare?
+
 #include "fast_simulator/Joint.h"
 #include "fast_simulator/Object.h"
 #include "fast_simulator/World.h"
@@ -60,6 +62,15 @@ protected:
     ros::NodeHandle& nh_;
 
     tf::TransformBroadcaster tf_broadcaster_;
+
+    /**
+     * @brief initJoint Initializes reference generator etc for a joint
+     * @param name joint name (without prefix)
+     * @param pos start position in rad or m
+     */
+    void initJoint(const std::string& name, double pos);
+
+    tue::manipulation::ReferenceGenerator reference_generator_;
 
 private:
 

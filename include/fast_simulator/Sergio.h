@@ -7,7 +7,6 @@
 
 #include <actionlib/server/action_server.h>
 #include <control_msgs/FollowJointTrajectoryAction.h>
-#include <tue/manipulation/reference_generator.h>
 
 #include "fast_simulator/Robot.h"
 
@@ -65,8 +64,6 @@ protected:
 
     typedef actionlib::ActionServer<control_msgs::FollowJointTrajectoryAction> TrajectoryActionServer;
 
-    tue::manipulation::ReferenceGenerator reference_generator_;
-
     void goalCallback(TrajectoryActionServer::GoalHandle gh);
 
     void cancelCallback(TrajectoryActionServer::GoalHandle gh);
@@ -74,8 +71,6 @@ protected:
     TrajectoryActionServer* as_;
 
     std::map<std::string, TrajectoryActionServer::GoalHandle> goal_handles_;
-
-    void initJoint(const std::string& name, double pos);
 
 };
 

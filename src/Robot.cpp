@@ -2,6 +2,8 @@
 
 #include <tf_conversions/tf_kdl.h>
 
+#include <tue/manipulation/reference_generator.h>
+
 using namespace std;
 
 // ----------------------------------------------------------------------------------------------------
@@ -167,4 +169,13 @@ Object* Robot::getLink(const std::string& name) const {
 
 void Robot::setParameter(const std::string& param_name, const std::string& value) {
 
+}
+
+// ----------------------------------------------------------------------------------------------------
+
+void Robot::initJoint(const std::string& name, double pos)
+{
+    reference_generator_.initJoint(name, 0, 0, 0, 0);
+    reference_generator_.setJointState(name, pos, 0);
+    setJointPosition(name, pos);
 }

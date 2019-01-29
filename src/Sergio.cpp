@@ -105,15 +105,6 @@ Sergio::~Sergio()
 
 // ----------------------------------------------------------------------------------------------------
 
-void Sergio::initJoint(const std::string& name, double pos)
-{
-    reference_generator_.initJoint(name, 0, 0, 0, 0);
-    reference_generator_.setJointState(name, pos, 0);
-    setJointPosition(name, pos);
-}
-
-// ----------------------------------------------------------------------------------------------------
-
 void Sergio::step(double dt)
 {
     const std::vector<std::string>& joint_names = reference_generator_.joint_names();
