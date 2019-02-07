@@ -62,7 +62,7 @@ Object* ModelParser::parse(const std::string& model_name, const std::string& id,
     {
         std::stringstream s_error_ed;
         ed::UpdateRequest req;
-        if (!ed_model_loader_.create(id, model_name, req, s_error_ed))
+        if (!ed_model_loader_.create(id, model_name, req, s_error_ed, true))
         {
             error = s_error_ed.str();
             return 0;
