@@ -29,7 +29,7 @@ find_package(catkin REQUIRED COMPONENTS
   visualization_msgs
 )
 
-catkin_add_env_hooks(60.fast_simulator SHELLS sh DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/env-hooks)
+catkin_add_env_hooks(60.fast_simulator SHELLS bash DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/env-hooks)
 
 catkin_python_setup()
 
