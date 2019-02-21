@@ -44,6 +44,7 @@
   <run_depend>geometry_msgs</run_depend>
   <run_depend>image_transport</run_depend>
   <run_depend>interactive_markers</run_depend>
+  <run_depend>ipython</run_depend>
   <run_depend>kdl_parser</run_depend>
   <run_depend>message_runtime</run_depend>
   <run_depend>nav_msgs</run_depend>
@@ -51,6 +52,7 @@
   <run_depend>rgbd</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>roslib</run_depend>
+  <run_depend>rospy</run_depend>
   <run_depend>sensor_msgs</run_depend>
   <run_depend>std_msgs</run_depend>
   <run_depend>tf</run_depend>
