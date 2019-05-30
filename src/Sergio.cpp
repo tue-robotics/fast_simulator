@@ -53,7 +53,7 @@ Sergio::Sergio(ros::NodeHandle& nh) : Robot(nh, "sergio")
     const std::vector<std::string>& joint_names = reference_generator_.joint_names();
     for(unsigned int i = 0 ; i < joint_names.size(); ++i)
     {
-        boost::shared_ptr<const urdf::Joint> joint = model.getJoint(joint_names[i]);
+        urdf::JointConstSharedPtr joint = model.getJoint(joint_names[i]);
         reference_generator_.setPositionLimits(i, joint->limits->lower, joint->limits->upper);
         reference_generator_.setMaxVelocity(i, joint->limits->velocity);
         reference_generator_.setMaxAcceleration(i, joint->limits->effort);
