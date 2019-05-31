@@ -134,7 +134,7 @@ void SimulatorROS::configure(tue::Configuration& config)
                     if (config.value("image", image_filename) && config.value("height", height)
                             && config.value("resolution", resolution))
                     {
-                        cv::Mat img = cv::imread(image_filename, CV_LOAD_IMAGE_GRAYSCALE);
+                        cv::Mat img = cv::imread(image_filename, cv::IMREAD_GRAYSCALE);
                         if (img.data)
                         {
                             // Create shape from heightmap

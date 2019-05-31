@@ -299,7 +299,7 @@ Object* ModelParser::parseHeightMap(const TiXmlElement* xml_elem, stringstream& 
 
 geo::HeightMap ModelParser::getHeightMapFromImage(const std::string& image_filename, double height, double resolution) {
 
-    cv::Mat image = cv::imread(image_filename, CV_LOAD_IMAGE_GRAYSCALE);   // Read the file
+    cv::Mat image = cv::imread(image_filename, cv::IMREAD_GRAYSCALE);   // Read the file
 
     vector<vector<double> > map;
 
