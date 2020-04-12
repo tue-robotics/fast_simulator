@@ -15,7 +15,7 @@
 //#include <sensor_msgs/Image.h>
 //#include <sensor_msgs/CameraInfo.h>
 
-//#include <image_geometry/pinhole_camera_model.h>
+#include <image_geometry/pinhole_camera_model.h>
 
 #include <virtual_cam/Image.h>
 
@@ -45,7 +45,9 @@ protected:
 
     rgbd::Server rgbd_server_;
 
-    geo::DepthCamera cam_model_;
+    image_geometry::PinholeCameraModel cam_model_;
+
+    geo::DepthCamera rasterizer_;
 
     std::string rgb_frame_id_, depth_frame_id_;
 

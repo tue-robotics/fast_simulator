@@ -4,7 +4,8 @@
 
 #include "fast_simulator/util.h"
 
-//#include <opencv2/highgui/highgui.hpp>
+#include <sensor_msgs/CameraInfo.h>
+#include <sensor_msgs/distortion_models.h>
 
 #include <rgbd/Image.h>
 
@@ -22,9 +23,21 @@ float randomUniform(float min, float max)
 Kinect::Kinect()
 {
     // Set cam model
-    cam_model_.setFocalLengths(554.2559327880068, 554.2559327880068);
-    cam_model_.setOpticalCenter(320.5, 240.5);
-    cam_model_.setOpticalTranslation(0, 0);
+    sensor_msgs::CameraInfo cam_info;
+    cam_info.K = sensor_msgs::CameraInfo::_K_type({554.2559327880068, 0.0, 320.5,
+                          0.0, 554.2559327880068, 240.5,
+                          0.0, 0.0, 1.0});
+    cam_info.P = sensor_msgs::CameraInfo::_P_type({554.2559327880068, 0.0, 320.5, 0.0,
+                                                   0.0, 554.2559327880068, 240.5, 0.0,
+                                                   0.0, 0.0, 1.0, 0.0});
+    cam_info.distortion_model = sensor_msgs::distortion_models::PLUMB_BOB;
+    cam_info.width = 640;
+    cam_info.height = 480;
+    cam_model_.fromCameraInfo(cam_info);
+
+    rasterizer_.setFocalLengths(cam_model_.fx(), cam_model_.fy());
+    rasterizer_.setOpticalCenter(cam_model_.cx(), cam_model_.cy());
+    rasterizer_.setOpticalTranslation(cam_model_.Tx(), cam_model_.Ty());
 
     // init rgb image
     image_rgb_ = cv::Mat(480, 640, CV_8UC3, cv::Scalar(255, 255, 255));
@@ -93,7 +106,7 @@ void Kinect::step(World& world)
         geo::ShapePtr shape = obj->getShape();
         if (shape) {
             geo::Transform t = tf_map_to_kinect.inverse() * obj->getAbsolutePose();
-            cam_model_.rasterize(*shape, t, image_depth_);
+            rasterizer_.rasterize(*shape, t, image_depth_);
         }
 
         std::vector<Object*> children;
@@ -104,7 +117,7 @@ void Kinect::step(World& world)
             geo::ShapePtr child_shape = child.getShape();
             if (child_shape) {
                 geo::Transform t = tf_map_to_kinect.inverse() * child.getAbsolutePose();
-                cam_model_.rasterize(*child_shape, t, image_depth_);
+                rasterizer_.rasterize(*child_shape, t, image_depth_);
             }
         }
     }
@@ -143,7 +156,7 @@ void Kinect::step(World& world)
             double z = -tf_kinect_to_object.getOrigin().getZ();
 
             if (z > 0 && z < 3) {
-                cv::Point2d pos2d = cam_model_.project3Dto2D(tf_kinect_to_object.t);
+                cv::Point2d pos2d = rasterizer_.project3Dto2D(tf_kinect_to_object.t);
 
                 if (pos2d.x > 0 && pos2d.x < image_rgb_.cols && pos2d.y > 0 && pos2d.y < image_rgb_.rows) {
 
