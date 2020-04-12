@@ -16,7 +16,7 @@
   <depend>ed</depend>
   <depend>geolib2</depend>
   <depend>geometry_msgs</depend>
-  <depend>image_geometery</depend>
+  <depend>image_geometry</depend>
   <depend>image_transport</depend>
   <depend>interactive_markers</depend>
   <depend>kdl_parser</depend>
