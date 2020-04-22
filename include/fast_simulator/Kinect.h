@@ -10,7 +10,7 @@
 //#include <opencv2/imgproc/imgproc.hpp>
 //#include <opencv2/highgui/highgui.hpp>
 
-#include <rgbd/Server.h>
+#include <rgbd/server.h>
 
 //#include <sensor_msgs/Image.h>
 //#include <sensor_msgs/CameraInfo.h>

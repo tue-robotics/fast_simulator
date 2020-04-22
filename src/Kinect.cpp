@@ -7,7 +7,7 @@
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/distortion_models.h>
 
-#include <rgbd/Image.h>
+#include <rgbd/image.h>
 
 using namespace std;
 
