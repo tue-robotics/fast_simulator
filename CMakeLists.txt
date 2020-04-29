@@ -102,4 +102,5 @@ add_executable(simulator
 )
 
 target_link_libraries(simulator tinyxml ${catkin_LIBRARIES})
+add_dependencies(simulator ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
