@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package>
+<package format="3">
   <name>fast_simulator</name>
   <version>0.0.0</version>
   <description>The fast_simulator package</description>
@@ -10,59 +10,34 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>actionlib</build_depend>
-  <build_depend>control_msgs</build_depend>
-  <build_depend>cv_bridge</build_depend>
-  <build_depend>ed</build_depend>
-  <build_depend>geolib2</build_depend>
-  <build_depend>geometry_msgs</build_depend>
-  <build_depend>image_transport</build_depend>
-  <build_depend>interactive_markers</build_depend>
-  <build_depend>kdl_parser</build_depend>
-  <build_depend>nav_msgs</build_depend>
-  <build_depend>pcl_ros</build_depend>
-  <build_depend>rgbd</build_depend>
-  <build_depend>roscpp</build_depend>
-  <build_depend>roslib</build_depend>
-  <build_depend>sensor_msgs</build_depend>
-  <build_depend>std_msgs</build_depend>
-  <build_depend>tf</build_depend>
-  <build_depend>tf_conversions</build_depend>
-  <build_depend>trajectory_msgs</build_depend>
-  <build_depend>tue_config</build_depend>
-  <build_depend>tue_filesystem</build_depend>
-  <build_depend>tue_manipulation</build_depend>
-  <build_depend>tue_msgs</build_depend>
-  <build_depend>virtual_cam</build_depend>
-  <build_depend>visualization_msgs</build_depend>
+  <depend>actionlib</depend>
+  <depend>control_msgs</depend>
+  <depend>cv_bridge</depend>
+  <depend>ed</depend>
+  <depend>geolib2</depend>
+  <depend>geometry_msgs</depend>
+  <depend>image_geometry</depend>
+  <depend>image_transport</depend>
+  <depend>interactive_markers</depend>
+  <depend>kdl_parser</depend>
+  <depend>nav_msgs</depend>
+  <depend>pcl_ros</depend>
+  <depend>rgbd</depend>
+  <depend>roscpp</depend>
+  <depend>roslib</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>tf</depend>
+  <depend>tf_conversions</depend>
+  <depend>trajectory_msgs</depend>
+  <depend>tue_config</depend>
+  <depend>tue_filesystem</depend>
+  <depend>tue_manipulation</depend>
+  <depend>tue_msgs</depend>
+  <depend>virtual_cam</depend>
+  <depend>visualization_msgs</depend>
 
-  <run_depend>actionlib</run_depend>
-  <run_depend>control_msgs</run_depend>
-  <run_depend>cv_bridge</run_depend>
-  <run_depend>ed</run_depend>
-  <run_depend>geolib2</run_depend>
-  <run_depend>geometry_msgs</run_depend>
-  <run_depend>image_transport</run_depend>
-  <run_depend>interactive_markers</run_depend>
-  <run_depend>ipython</run_depend>
-  <run_depend>kdl_parser</run_depend>
-  <run_depend>message_runtime</run_depend>
-  <run_depend>nav_msgs</run_depend>
-  <run_depend>pcl_ros</run_depend>
-  <run_depend>rgbd</run_depend>
-  <run_depend>roscpp</run_depend>
-  <run_depend>roslib</run_depend>
-  <run_depend>rospy</run_depend>
-  <run_depend>sensor_msgs</run_depend>
-  <run_depend>std_msgs</run_depend>
-  <run_depend>tf</run_depend>
-  <run_depend>tf_conversions</run_depend>
-  <run_depend>trajectory_msgs</run_depend>
-  <run_depend>tue_config</run_depend>
-  <run_depend>tue_filesystem</run_depend>
-  <run_depend>tue_manipulation</run_depend>
-  <run_depend>tue_msgs</run_depend>
-  <run_depend>virtual_cam</run_depend>
-  <run_depend>visualization_msgs</run_depend>
+  <exec_depend>ipython</exec_depend>
+  <exec_depend>rospy</exec_depend>
 
 </package>
