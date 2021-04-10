@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.0.2)
 project(fast_simulator)
 
 find_package(catkin REQUIRED COMPONENTS
+  cmake_modules
+  control_msgs
   cv_bridge
   ed
   geolib2
@@ -25,6 +27,8 @@ find_package(catkin REQUIRED COMPONENTS
   virtual_cam
   visualization_msgs
 )
+
+find_package(TinyXML2 REQUIRED)
 
 catkin_add_env_hooks(60.fast_simulator SHELLS bash DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/env-hooks)
 
@@ -98,6 +102,6 @@ add_executable(simulator
   src/World.cpp
 )
 
-target_link_libraries(simulator tinyxml ${catkin_LIBRARIES})
+target_link_libraries(simulator ${catkin_LIBRARIES} ${TinyXML2_LIBRARIES})
 add_dependencies(simulator ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
