@@ -14,7 +14,9 @@
 
 #include <ed/models/model_loader.h>
 
-class TiXmlElement;
+namespace tinyxml2 {
+    class XMLElement;
+}
 
 class ModelParser {
 
@@ -24,11 +26,11 @@ public:
 
     virtual ~ModelParser();
 
-    std::vector<double> parseArray(const TiXmlElement* xml_elem);
+    std::vector<double> parseArray(const tinyxml2::XMLElement* xml_elem);
 
     Object* parse(const std::string& model_name, const std::string& id, std::string& error);
 
-    Object* parseHeightMap(const TiXmlElement* xml_elem, std::stringstream& s_error);
+    Object* parseHeightMap(const tinyxml2::XMLElement* xml_elem, std::stringstream& s_error);
 
     static geo::HeightMap getHeightMapFromImage(const std::string& filename, double height, double resolution);
 

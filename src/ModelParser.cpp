@@ -7,12 +7,10 @@
 // for loading images
 #include <opencv2/highgui/highgui.hpp>
 
-#include <tinyxml.h>
+#include <tinyxml2.h>
 
 #include <ed/update_request.h>
 #include <geolib/shapes.h>
-
-using namespace std;
 
 ModelParser::ModelParser(const std::string& filename, const std::string& model_dir) : filename_(filename), model_dir_(model_dir) {
 
@@ -22,13 +20,13 @@ ModelParser::~ModelParser() {
 
 }
 
-vector<double> ModelParser::parseArray(const TiXmlElement* xml_elem) {
+std::vector<double> ModelParser::parseArray(const tinyxml2::XMLElement* xml_elem) {
     std::string txt = xml_elem->GetText();
 
-    vector<double> v;
+    std::vector<double> v;
 
-    string word;
-    stringstream stream(txt);
+    std::string word;
+    std::stringstream stream(txt);
     while( getline(stream, word, ' ') ) {
         v.push_back(atof(word.c_str()));
     }
@@ -104,40 +102,40 @@ Object* ModelParser::parse(const std::string& model_name, const std::string& id,
         return obj_root;
     }
 
-    stringstream s_error;
+    std::stringstream s_error;
 
     //error_ = stringstream("");
 
-    TiXmlDocument doc(filename_);
-    doc.LoadFile();
+    tinyxml2::XMLDocument doc;
+    doc.LoadFile(filename_.c_str());
 
     if (doc.Error()) {
-        s_error << "While parsing '" << filename_ << "': " << endl << endl << doc.ErrorDesc() << " at line " << doc.ErrorRow() << ", col " << doc.ErrorCol() << endl;
+        s_error << "While parsing '" << filename_ << "': " << std::endl << std::endl << doc.ErrorStr() << " at line " << doc.ErrorLineNum() << std::endl;
         error = s_error.str();
         return 0;
     }
 
-    const TiXmlElement* model_xml = doc.FirstChildElement("model");
+    const tinyxml2::XMLElement* model_xml = doc.FirstChildElement("model");
 
     while (model_xml) {
 
         const char* name = model_xml->Attribute("name");
         if (name) {
-            if (string(name) == model_name) {
+            if (std::string(name) == model_name) {
 
-                cout << "Parsing model '" << name << "'" << endl;
+                std::cout << "Parsing model '" << name << "'" << std::endl;
 
-                vector<double> xyz(3, 0);
-                vector<double> rpy;
-                vector<double> size;
+                std::vector<double> xyz(3, 0);
+                std::vector<double> rpy;
+                std::vector<double> size;
 
                 Object* model = new Object(name);
 
-                const TiXmlElement* shape_xml = model_xml->FirstChildElement();
+                const tinyxml2::XMLElement* shape_xml = model_xml->FirstChildElement();
                 while(shape_xml) {
 
                     // parse properties valid for all shapes
-                    const TiXmlElement* xyz_xml = shape_xml->FirstChildElement("xyz");
+                    const tinyxml2::XMLElement* xyz_xml = shape_xml->FirstChildElement("xyz");
                     if (xyz_xml) {
                         xyz = parseArray(xyz_xml);
                     }
@@ -145,7 +143,7 @@ Object* ModelParser::parse(const std::string& model_name, const std::string& id,
                     geo::Vector3 pos(xyz[0], xyz[1], xyz[2]);
                     geo::Matrix3 rot = geo::Matrix3::identity();
 
-                    const TiXmlElement* rpy_xml = shape_xml->FirstChildElement("rpy");
+                    const tinyxml2::XMLElement* rpy_xml = shape_xml->FirstChildElement("rpy");
                     if (rpy_xml) {
                         rpy = parseArray(rpy_xml);
                         if (fabs(rpy[0]) < 0.0001 && fabs(rpy[1]) < 0.0001 && fabs(rpy[2]) < 0.0001) {
@@ -155,12 +153,12 @@ Object* ModelParser::parse(const std::string& model_name, const std::string& id,
                         }
                     }
 
-                    const TiXmlElement* size_xml = shape_xml->FirstChildElement("size");
+                    const tinyxml2::XMLElement* size_xml = shape_xml->FirstChildElement("size");
                     if (size_xml) {
                         size = parseArray(size_xml);
                     }
 
-                    string shape_type = shape_xml->Value();
+                    std::string shape_type = shape_xml->Value();
                     if (shape_type == "heightMap") {
                         Object* height_map = parseHeightMap(shape_xml, s_error);
 
@@ -183,7 +181,7 @@ Object* ModelParser::parse(const std::string& model_name, const std::string& id,
                             }
                             model->addChild(obj);
                         } else {
-                            s_error << "In definition for model '" << name << "': shape '" << shape_type << "' has no size property" << endl;
+                            s_error << "In definition for model '" << name << "': shape '" << shape_type << "' has no size property" << std::endl;
                         }
                     } else if (shape_type == "cylinder") {
                         if (!size.empty()) {
@@ -200,10 +198,10 @@ Object* ModelParser::parse(const std::string& model_name, const std::string& id,
                             }
                             model->addChild(obj);
                         } else {
-                            s_error << "In definition for model '" << name << "': shape '" << shape_type << "' has no size property" << endl;
+                            s_error << "In definition for model '" << name << "': shape '" << shape_type << "' has no size property" << std::endl;
                         }
                     } else {
-                        s_error << "In definition for model '" << name << "': Unknown shape type: '" << shape_type << "'" << endl;
+                        s_error << "In definition for model '" << name << "': Unknown shape type: '" << shape_type << "'" << std::endl;
                     }
 
                     shape_xml = shape_xml->NextSiblingElement();
@@ -211,14 +209,14 @@ Object* ModelParser::parse(const std::string& model_name, const std::string& id,
 
                 error = s_error.str();
                 if (s_error.str().empty()) {
-                    cout << "... Parsing successfully ..." << endl;
+                    std::cout << "... Parsing successfully ..." << std::endl;
                     return model;
-                } else {                    
+                } else {
                     return 0;
                 }
             }
         } else {
-            s_error << "Encountered model without 'name' attribute." << endl;
+            s_error << "Encountered model without 'name' attribute." << std::endl;
         }
 
         model_xml = model_xml->NextSiblingElement("model");
@@ -230,32 +228,32 @@ Object* ModelParser::parse(const std::string& model_name, const std::string& id,
     return 0;
 }
 
-Object* ModelParser::parseHeightMap(const TiXmlElement* xml_elem, stringstream& s_error) {
-    const TiXmlElement* height_xml = xml_elem->FirstChildElement("height");
+Object* ModelParser::parseHeightMap(const tinyxml2::XMLElement* xml_elem, std::stringstream& s_error) {
+    const tinyxml2::XMLElement* height_xml = xml_elem->FirstChildElement("height");
     double height = 0;
     if (height_xml) {
         height = atof(height_xml->GetText());
     }
 
     if (height <= 0) {
-        s_error << "HeightMap: 'height' not or incorrectly specified." << endl;
+        s_error << "HeightMap: 'height' not or incorrectly specified." << std::endl;
         return 0;
     }
 
-    const TiXmlElement* resolution_xml = xml_elem->FirstChildElement("resolution");
+    const tinyxml2::XMLElement* resolution_xml = xml_elem->FirstChildElement("resolution");
     double resolution = 0;
     if (resolution_xml) {
         resolution = atof(resolution_xml->GetText());
     }
 
     if (resolution <= 0) {
-        s_error << "HeightMap: 'resolution' not or incorrectly specified." << endl;
+        s_error << "HeightMap: 'resolution' not or incorrectly specified." << std::endl;
         return 0;
     }
 
-    const TiXmlElement* image_xml = xml_elem->FirstChildElement("image");
+    const tinyxml2::XMLElement* image_xml = xml_elem->FirstChildElement("image");
     if (image_xml) {
-        string image_filename = image_xml->GetText();
+        std::string image_filename = image_xml->GetText();
         Object* obj = new Object();
 
         geo::HeightMap hmap = getHeightMapFromImage(model_dir_ + "/" + image_filename, height, resolution);
@@ -263,36 +261,8 @@ Object* ModelParser::parseHeightMap(const TiXmlElement* xml_elem, stringstream& 
 
         return obj;
     } else {
-        s_error << "HeightMap: 'image' not specified." << endl;
+        s_error << "HeightMap: 'image' not specified." << std::endl;
     }
-
-    /*
-    const TiXmlElement* topic_xml = xml_elem->FirstChildElement("topic");
-    if (topic_xml) {
-        string topic = topic_xml->GetText();
-
-        ros::NodeHandle nh;
-        ros::Subscriber sub_map = nh.subscribe(topic, 10, &ModelParser::callbackMap, this);
-        while(ros::ok() && world_map_.data.empty()) {
-            ros::spinOnce();
-            ros::Duration(1.0).sleep();
-            ROS_INFO("Waiting for map at topic %s", sub_map.getTopic().c_str());
-        }
-        ROS_INFO("Map found at topic %s", sub_map.getTopic().c_str());
-        sub_map.shutdown();
-
-        Object* root = new Object("world");
-        //root->pose_ = tf::Transform(tf::Quaternion(0, 0, 0, 1), tf::Vector3(1, 2, 3));
-
-        createQuadTree(world_map_, 0, 0, world_map_.info.width, world_map_.info.height, height, root);
-
-        // Object* floor = new Object();
-        // floor->setShape(Box(tf::Vector3(-100, -100, -0.2), tf::Vector3(100, 100, 0)));
-        // root->addChild(floor);
-
-        return root;
-    }
-    */
 
     return 0;
 }
@@ -301,7 +271,7 @@ geo::HeightMap ModelParser::getHeightMapFromImage(const std::string& image_filen
 
     cv::Mat image = cv::imread(image_filename, cv::IMREAD_GRAYSCALE);   // Read the file
 
-    vector<vector<double> > map;
+    std::vector<std::vector<double> > map;
 
     if (image.data ) {
 
@@ -322,71 +292,3 @@ geo::HeightMap ModelParser::getHeightMapFromImage(const std::string& image_filen
 
     return geo::HeightMap::fromGrid(map, resolution);
 }
-
-/*
-void ModelParser::createQuadTree(const nav_msgs::OccupancyGrid& map, unsigned int mx_min, unsigned int my_min,
-                                                    unsigned int mx_max, unsigned int my_max, double height, Object* parent, string indent) {
-
-    bool has_cell = false;
-    for(unsigned int mx = mx_min; mx < mx_max; ++mx) {
-        for(unsigned int my = my_min; my < my_max; ++my) {
-            if (map.data[map.info.width * my + mx] > 10 ) {
-                has_cell = true;
-            }
-        }
-    }
-
-    if (!has_cell) {
-        return;
-    }
-
-    Object* obj = new Object();
-    tf::Vector3 min_map((double)mx_min * map.info.resolution,
-                        (double)my_min * map.info.resolution, 0);
-    tf::Vector3 max_map((double)mx_max * map.info.resolution,
-                        (double)my_max * map.info.resolution, height);
-    obj->setBoundingBox(Box(map_transform_ * min_map, map_transform_ * max_map));
-    // parent->addChild(obj, tf::Transform(tf::Quaternion(0, 0, 0, 1), tf::Vector3(0, 0, 0)));
-
-    //cout << indent << mx_min << " - " << mx_max << ", " << my_min << " - " << my_max << endl;
-
-    // cout << indent << toString(min_map) << ", " << toString(max_map) << endl;
-
-
-    if (mx_max - mx_min <= 2 || my_max - my_min <= 2) {
-        for(unsigned int mx = mx_min; mx < mx_max; ++mx) {
-            for(unsigned int my = my_min; my < my_max; ++my) {
-                if (map.data[map.info.width * my + mx] > 10 ) {
-                    tf::Vector3 pos_map((double)mx * map.info.resolution,
-                                        (double)my * map.info.resolution, 0);
-
-                    tf::Vector3 pos = map_transform_ * pos_map;
-
-                    Object* child = new Object();
-                    child->setShape(Box(pos, tf::Vector3(pos.x() + map.info.resolution,
-                                                       pos.y() + map.info.resolution,
-                                                       height)));
-                    obj->addChild(child); //, tf::Transform(tf::Quaternion(0, 0, 0, 1), tf::Vector3(0, 0, 0)));
-                }
-            }
-        }
-    } else {
-
-        unsigned int cx = (mx_max + mx_min) / 2;
-        unsigned int cy = (my_max + my_min) / 2;
-
-        createQuadTree(map, mx_min, my_min, cx, cy, height, obj, indent + "    ");
-        createQuadTree(map, cx , my_min, mx_max, cy, height, obj, indent + "    ");
-        createQuadTree(map, mx_min, cy , cx, my_max, height, obj, indent + "    ");
-        createQuadTree(map, cx , cy , mx_max, my_max, height, obj, indent + "    ");
-    }
-
-    parent->addChild(obj);
-}
-
-void ModelParser::callbackMap(const nav_msgs::OccupancyGrid::ConstPtr& msg) {
-    world_map_ = *msg;
-    tf::poseMsgToTF(world_map_.info.origin, map_transform_);
-    map_transform_inverse_ = map_transform_.inverse();
-}
-*/
