@@ -129,7 +129,7 @@ bool Object::intersect(const geo::Ray& r, float t0, float t1, double& distance) 
 
     geo::Ray r_transformed = r;
     if (has_pose_) {
-        r_transformed = geo::Ray(pose_inv_ * r.origin_, pose_inv_.getBasis() * r.direction_);
+        r_transformed = geo::Ray(pose_inv_ * r.getOrigin(), pose_inv_.getBasis() * r.getDirection());
     }
 
 //    r.nr_intersection_calcs_++;
