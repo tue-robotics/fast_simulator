@@ -35,9 +35,7 @@ Kinect::Kinect()
     cam_info.height = 480;
     cam_model_.fromCameraInfo(cam_info);
 
-    rasterizer_.setFocalLengths(cam_model_.fx(), cam_model_.fy());
-    rasterizer_.setOpticalCenter(cam_model_.cx(), cam_model_.cy());
-    rasterizer_.setOpticalTranslation(cam_model_.Tx(), cam_model_.Ty());
+    rasterizer_.initFromCamModel(cam_model_);
 
     // init rgb image
     image_rgb_ = cv::Mat(480, 640, CV_8UC3, cv::Scalar(255, 255, 255));
