@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   kdl_parser
   message_generation
   nav_msgs
+  rosconsole_bridge
   roscpp
   roslib
   sensor_msgs
