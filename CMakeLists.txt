@@ -101,6 +101,9 @@ add_executable(simulator
   src/StandaloneLRF.cpp
   src/util.cpp
   src/World.cpp
+  
+  # Forward geolib2 and tue_filesystem logging to rosconsole
+  src/rosconsole_bridge.cpp
 )
 
 target_link_libraries(simulator ${catkin_LIBRARIES} ${TinyXML2_LIBRARIES})
