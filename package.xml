@@ -27,6 +27,7 @@
   <depend>nav_msgs</depend>
   <depend>pcl_ros</depend>
   <depend>rgbd</depend>
+  <depend>rosconsole_bridge</depend>
   <depend>roscpp</depend>
   <depend>roslib</depend>
   <depend>sensor_msgs</depend>
