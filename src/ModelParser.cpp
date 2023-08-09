@@ -74,11 +74,11 @@ Object* ModelParser::parse(const std::string& model_name, const std::string& id,
             const geo::Pose3D& pose = it->second;
 
             geo::ShapeConstPtr shape;
-            std::map<ed::UUID, geo::ShapeConstPtr>::const_iterator it_shape = req.shapes.find(ed_id);
-            if (it_shape != req.shapes.end())
+            std::map<ed::UUID, geo::ShapeConstPtr>::const_iterator it_shape = req.visuals.find(ed_id);
+            if (it_shape != req.visuals.end())
                 shape = it_shape->second;
 
-            if (it_shape != req.shapes.end())
+            if (it_shape != req.visuals.end())
             {
                 if (ed_id.str() == id)
                 {
